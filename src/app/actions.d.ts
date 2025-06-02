@@ -14,9 +14,40 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 "use client";
 
+interface File {
+  fullPath: string;
+  name: string;
+  contents: {
+    "cfdi:Comprobante": {
+      attributes: {
+        Serie: string;
+        Folio: string;
+      };
+      "cfdi:Emisor": [
+        {
+          attributes: {
+            Nombre: "fdf";
+            Rfc: "dcffdff";
+          };
+        },
+      ];
+    };
+  } | null;
+  pdfPath?: string;
+}
+
+interface CustoFileMetadata {
+  success: boolean;
+  files: Array<{
+    fullpath: string;
+    name: string;
+    contents: string;
+  }>;
+}
+
 interface Window {
   electronAPI: {
-    selectDirectory: () => Promise<SelectDirectoryResult>;
+    selectDirectory: () => Promise<CustoFileMetadata>;
     openPath: (string) => Promise<string>;
   };
   void;
@@ -24,9 +55,4 @@ interface Window {
 
 interface FileSystemDirectoryHandle {
   entries?: () => AsyncIterableIterator<[string, FileSystemHandle]>;
-}
-
-interface FileMetadata {
-  name: string;
-  fullPath: string;
 }

@@ -63,8 +63,27 @@ ipcMain.handle("select-directory", async () => {
 
   const dirPath = result.filePaths[0];
   try {
-    const files = fs.readdirSync(dirPath);
-    return { success: true, dirPath, files };
+    const filePaths = fs.readdirSync(dirPath);
+    const files = filePaths.map((filePath) => {
+      let fullpath = path.join(dirPath, filePath);
+      let pathMetadata = path.parse(filePath);
+
+      if (pathMetadata.ext == ".xml") {
+        const contents = fs.readFileSync(fullpath, "utf-8");
+
+        return {
+          fullpath: fullpath,
+          name: pathMetadata.name,
+          contents: contents,
+        };
+      }
+
+      return {
+        fullpath: fullpath,
+        name: pathMetadata.name,
+      };
+    });
+    return { success: true, files };
   } catch (error) {
     return { success: false, error: error.message };
   }
