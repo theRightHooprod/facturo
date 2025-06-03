@@ -22,6 +22,9 @@ interface File {
       attributes: {
         Serie: string;
         Folio: string;
+        Fecha: string;
+        SubTotal: string;
+        Total: string;
       };
       "cfdi:Emisor": [
         {
@@ -29,6 +32,29 @@ interface File {
             Nombre: "fdf";
             Rfc: "dcffdff";
           };
+        },
+      ];
+      "cfdi:Conceptos": [
+        {
+          "cfdi:Concepto": [
+            {
+              "cfdi:Impuestos": [
+                {
+                  "cfdi:Traslados": [
+                    {
+                      "cfdi:Traslado": [
+                        {
+                          attributes: {
+                            Importe: number;
+                          };
+                        },
+                      ];
+                    },
+                  ];
+                },
+              ];
+            },
+          ];
         },
       ];
     };

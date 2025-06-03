@@ -93,7 +93,10 @@ export function InvoiceListing() {
       <div className="flex flex-col gap-2.5">
         {fileMetadata &&
           Array.from(fileMetadata).map((metadata: File, index) => (
-            <details className="border-full cursor-pointer rounded-2xl border-black/10 bg-gray-100 p-6 marker:text-transparent dark:text-black">
+            <details
+              key={index}
+              className="border-full cursor-pointer rounded-2xl border-black/10 bg-gray-100 p-6 marker:text-transparent dark:text-black"
+            >
               <summary>
                 {metadata.contents?.["cfdi:Comprobante"].attributes.Serie}
                 {metadata.contents?.["cfdi:Comprobante"].attributes.Folio}
@@ -104,14 +107,37 @@ export function InvoiceListing() {
                 }
               </summary>
               <div>
+                <br></br>
+                <p>
+                  <b>Fecha de generación: </b>
+                  {metadata.contents?.["cfdi:Comprobante"].attributes.Fecha}
+                </p>
+                <p>
+                  <b>Subtotal: </b>
+                  {metadata.contents?.["cfdi:Comprobante"].attributes.SubTotal}
+                </p>
+                <p>
+                  <b>Impuestos: </b>
+                  {
+                    metadata.contents?.["cfdi:Comprobante"][
+                      "cfdi:Conceptos"
+                    ][0]["cfdi:Concepto"][0]["cfdi:Impuestos"][0][
+                      "cfdi:Traslados"
+                    ][0]["cfdi:Traslado"][0].attributes.Importe
+                  }
+                </p>
+                <p>
+                  <b>Total: </b>
+                  {metadata.contents?.["cfdi:Comprobante"].attributes.Total}
+                </p>
                 <div className="my-2 border border-t-gray-400"></div>
                 <div className="flex flex-row gap-1">
                   {metadata.fullPath ? (
                     <Button
                       onClick={() => handleOpenButton(metadata.fullPath!)}
-                      className="bg-white hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
+                      className="bg-orange-600 hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
                     >
-                      <div className="dark:text-black">Show .xml</div>
+                      <div className="dark:text-white">Show .xml</div>
                     </Button>
                   ) : (
                     <div></div>
@@ -119,9 +145,9 @@ export function InvoiceListing() {
                   {metadata.pdfPath ? (
                     <Button
                       onClick={() => handleOpenButton(metadata.pdfPath!)}
-                      className="bg-white hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
+                      className="bg-orange-600 hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
                     >
-                      <div className="dark:text-black">Show .pdf</div>
+                      <div className="dark:text-white">Show .pdf</div>
                     </Button>
                   ) : (
                     <div></div>
