@@ -90,46 +90,47 @@ export function InvoiceListing() {
         <div className="dark:text-black">Select directory</div>
       </Button>
       <br></br>
-      <ul>
+      <div className="flex flex-col gap-2.5">
         {fileMetadata &&
           Array.from(fileMetadata).map((metadata: File, index) => (
-            <li
-              key={index}
-              className="mt-5 flex flex-row place-content-between items-center"
-            >
-              <div>
-                {metadata.contents?.["cfdi:Comprobante"].attributes.Serie}{" "}
+            <details className="border-full cursor-pointer rounded-2xl border-black/10 bg-gray-100 p-6 marker:text-transparent dark:text-black">
+              <summary>
+                {metadata.contents?.["cfdi:Comprobante"].attributes.Serie}
                 {metadata.contents?.["cfdi:Comprobante"].attributes.Folio}
-              </div>
-              <div>
+                {" | "}
                 {
                   metadata.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0]
                     .attributes.Nombre
                 }
+              </summary>
+              <div>
+                <div className="my-2 border border-t-gray-400"></div>
+                <div className="flex flex-row gap-1">
+                  {metadata.fullPath ? (
+                    <Button
+                      onClick={() => handleOpenButton(metadata.fullPath!)}
+                      className="bg-white hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
+                    >
+                      <div className="dark:text-black">Show .xml</div>
+                    </Button>
+                  ) : (
+                    <div></div>
+                  )}
+                  {metadata.pdfPath ? (
+                    <Button
+                      onClick={() => handleOpenButton(metadata.pdfPath!)}
+                      className="bg-white hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
+                    >
+                      <div className="dark:text-black">Show .pdf</div>
+                    </Button>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
               </div>
-              {metadata.fullPath ? (
-                <Button
-                  onClick={() => handleOpenButton(metadata.fullPath!)}
-                  className="bg-white hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
-                >
-                  <div className="dark:text-black">xml</div>
-                </Button>
-              ) : (
-                <div></div>
-              )}
-              {metadata.pdfPath ? (
-                <Button
-                  onClick={() => handleOpenButton(metadata.pdfPath!)}
-                  className="bg-white hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
-                >
-                  <div className="dark:text-black">pdf</div>
-                </Button>
-              ) : (
-                <div></div>
-              )}
-            </li>
+            </details>
           ))}
-      </ul>
+      </div>
     </div>
   );
 }
