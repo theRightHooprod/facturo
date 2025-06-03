@@ -70,9 +70,6 @@ export function InvoiceListing() {
           pdfPath, // will be undefined if no match
         };
       });
-
-      console.log(mergedFiles);
-
       setFiles(mergedFiles);
     }
   };
