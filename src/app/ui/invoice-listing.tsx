@@ -18,11 +18,10 @@
 import React, { useState } from "react";
 import { Button } from "@/app/ui/button";
 import path from "path";
-// import { xmlToJson, parseXML } from "../lib/actions";
 import xml2js from "xml2js";
 
 export function InvoiceListing() {
-  const [fileMetadata, setFiles] = useState<File[] | null>(null);
+  const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
 
   const handleLoadDir = async (): Promise<void> => {
     const result: CustoFileMetadata =
@@ -61,15 +60,28 @@ export function InvoiceListing() {
         onlyPdffiles.map((pdf) => [pdf.name, pdf.fullPath]),
       );
 
-      const mergedFiles = onlyXMLfiles.map((xml) => {
+      const mergedFiles: Invoice[] = onlyXMLfiles.map((xml) => {
         const baseName = xml.name;
         const pdfPath = pdfMap.get(baseName);
 
         return {
-          ...xml,
+          serie: xml.contents?.["cfdi:Comprobante"].attributes.Serie,
+          folio: xml.contents?.["cfdi:Comprobante"].attributes.Folio,
+          emisor:
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0].attributes
+              .Nombre,
+          date: xml.contents?.["cfdi:Comprobante"].attributes.Fecha,
+          subtotal: xml.contents?.["cfdi:Comprobante"].attributes.SubTotal,
+          iva: xml.contents?.["cfdi:Comprobante"]["cfdi:Conceptos"][0][
+            "cfdi:Concepto"
+          ][0]["cfdi:Impuestos"][0]["cfdi:Traslados"][0]["cfdi:Traslado"][0]
+            .attributes.Importe,
+          total: xml.contents?.["cfdi:Comprobante"].attributes.Total,
+          fullpath: xml.fullPath,
           pdfPath, // will be undefined if no match
-        };
+        } as Invoice;
       });
+
       setFiles(mergedFiles);
     }
   };
@@ -89,49 +101,37 @@ export function InvoiceListing() {
       <br></br>
       <div className="flex flex-col gap-2.5">
         {fileMetadata &&
-          Array.from(fileMetadata).map((metadata: File, index) => (
+          Array.from(fileMetadata).map((metadata: Invoice, index) => (
             <details
               key={index}
               className="cursor-pointer rounded-2xl bg-gray-100 text-black select-none marker:text-transparent"
             >
               <summary className="h-full w-full p-6">
-                {metadata.contents?.["cfdi:Comprobante"].attributes.Serie}
-                {metadata.contents?.["cfdi:Comprobante"].attributes.Folio}{" "}
-                <b>
-                  {
-                    metadata.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0]
-                      .attributes.Nombre
-                  }
-                </b>
+                {metadata.serie}
+                {metadata.folio} <b>{metadata.emisor}</b>
               </summary>
               <div className="px-6 pb-6">
                 <p>
                   <b>Fecha de generación: </b>
-                  {metadata.contents?.["cfdi:Comprobante"].attributes.Fecha}
+                  {metadata.date}
                 </p>
                 <p>
                   <b>Subtotal: </b>
-                  {metadata.contents?.["cfdi:Comprobante"].attributes.SubTotal}
+                  {metadata.subtotal}
                 </p>
                 <p>
                   <b>Impuestos: </b>
-                  {
-                    metadata.contents?.["cfdi:Comprobante"][
-                      "cfdi:Conceptos"
-                    ][0]["cfdi:Concepto"][0]["cfdi:Impuestos"][0][
-                      "cfdi:Traslados"
-                    ][0]["cfdi:Traslado"][0].attributes.Importe
-                  }
+                  {metadata.iva}
                 </p>
                 <p>
                   <b>Total: </b>
-                  {metadata.contents?.["cfdi:Comprobante"].attributes.Total}
+                  {metadata.total}
                 </p>
                 <div className="my-2 border border-t-gray-400"></div>
                 <div className="flex flex-row gap-1">
-                  {metadata.fullPath ? (
+                  {metadata.fullpath ? (
                     <Button
-                      onClick={() => handleOpenButton(metadata.fullPath!)}
+                      onClick={() => handleOpenButton(metadata.fullpath!)}
                       className="bg-orange-600 hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
                     >
                       <div className="dark:text-white">Show .xml</div>

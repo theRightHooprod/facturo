@@ -62,6 +62,18 @@ interface File {
   pdfPath?: string;
 }
 
+interface Invoice {
+  serie: string;
+  folio: string;
+  emisor: string;
+  date: string;
+  subtotal: string;
+  iva: number;
+  total: string;
+  fullpath: string;
+  pdfPath: string; // will be undefined if no match
+}
+
 interface CustoFileMetadata {
   success: boolean;
   files: Array<{
