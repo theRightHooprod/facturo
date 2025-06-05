@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex h-12 items-center justify-center border-b border-b-gray-200">
+        <div className="app-region-drag tittlebar-drag flex h-12 items-center justify-center border-b border-b-gray-200">
           <div className="text-center dark:text-white">
             <p>FacTURO</p>
             <p>v0.0.1</p>

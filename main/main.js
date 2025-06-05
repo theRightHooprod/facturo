@@ -31,11 +31,9 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
-    // titleBarStyle: 'hidden',
-    // ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
+    titleBarStyle: "hidden",
+    ...(process.platform !== "darwin" ? { titleBarOverlay: true } : {}),
   });
-
-  // win.loadFile('index.html');
 
   if (app.isPackaged) {
     appServe(win).then(() => {
