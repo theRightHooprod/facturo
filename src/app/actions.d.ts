@@ -71,7 +71,7 @@ interface Invoice {
   iva: number;
   total: string;
   fullpath: string;
-  pdfPath: string; // will be undefined if no match
+  pdfPath: string | undefined; // will be undefined if no match
 }
 
 interface CustoFileMetadata {
