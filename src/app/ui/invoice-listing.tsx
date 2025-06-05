@@ -92,19 +92,19 @@ export function InvoiceListing() {
           Array.from(fileMetadata).map((metadata: File, index) => (
             <details
               key={index}
-              className="border-full cursor-pointer rounded-2xl border-black/10 bg-gray-100 p-6 marker:text-transparent dark:text-black"
+              className="cursor-pointer rounded-2xl bg-gray-100 text-black select-none marker:text-transparent"
             >
-              <summary>
+              <summary className="h-full w-full p-6">
                 {metadata.contents?.["cfdi:Comprobante"].attributes.Serie}
-                {metadata.contents?.["cfdi:Comprobante"].attributes.Folio}
-                {" | "}
-                {
-                  metadata.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0]
-                    .attributes.Nombre
-                }
+                {metadata.contents?.["cfdi:Comprobante"].attributes.Folio}{" "}
+                <b>
+                  {
+                    metadata.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0]
+                      .attributes.Nombre
+                  }
+                </b>
               </summary>
-              <div>
-                <br></br>
+              <div className="px-6 pb-6">
                 <p>
                   <b>Fecha de generación: </b>
                   {metadata.contents?.["cfdi:Comprobante"].attributes.Fecha}
