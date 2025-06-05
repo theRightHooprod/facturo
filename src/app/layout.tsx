@@ -27,13 +27,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="h-12 border-b border-b-gray-200 flex justify-center items-center ">
-          <div className="dark:text-white text-center">
+        <div className="flex h-12 items-center justify-center border-b border-b-gray-200">
+          <div className="text-center dark:text-white">
             <p>FacTURO</p>
             <p>v0.0.1</p>
           </div>
         </div>
         {children}
+        <br></br>
       </body>
     </html>
   );
