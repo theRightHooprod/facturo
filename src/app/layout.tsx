@@ -27,11 +27,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="app-region-drag fixed top-0 right-0 left-0 z-2 flex flex-col items-center gap-2 border-b border-gray-200 bg-white p-2 md:flex-row md:place-content-between md:gap-0 md:px-5 dark:bg-[var(--background)]">
-          <div className="flex flex-col items-center gap-1 md:flex-row">
-            <p>FacTURO</p>
-            <p>v0.0.1</p>
-          </div>
+        <div className="app-region-drag fixed top-0 right-0 left-0 z-2 flex h-8 flex-row items-center justify-center gap-1 border-b border-gray-400 bg-white dark:bg-[var(--background)]">
+          <p>FacTURO</p>
+          <p>v0.0.1</p>
         </div>
         {children}
         <br></br>
