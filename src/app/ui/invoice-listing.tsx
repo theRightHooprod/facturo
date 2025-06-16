@@ -103,6 +103,7 @@ export function InvoiceListing() {
         {fileMetadata &&
           Array.from(fileMetadata).map((metadata: Invoice, index) => (
             <details
+              open={true}
               key={index}
               className="cursor-pointer rounded-2xl bg-gray-100 text-black select-none marker:text-transparent"
             >
@@ -132,7 +133,7 @@ export function InvoiceListing() {
                   {metadata.fullpath ? (
                     <Button
                       onClick={() => handleOpenButton(metadata.fullpath!)}
-                      className="bg-orange-600 hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
+                      className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
                     >
                       <div className="dark:text-white">Show .xml</div>
                     </Button>
@@ -142,7 +143,7 @@ export function InvoiceListing() {
                   {metadata.pdfPath ? (
                     <Button
                       onClick={() => handleOpenButton(metadata.pdfPath!)}
-                      className="bg-orange-600 hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
+                      className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
                     >
                       <div className="dark:text-white">Show .pdf</div>
                     </Button>
