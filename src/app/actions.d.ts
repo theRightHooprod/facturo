@@ -15,7 +15,7 @@
 "use client";
 
 interface File {
-  fullPath: string;
+  filePath: string;
   name: string;
   contents: {
     "cfdi:Comprobante": {
@@ -77,7 +77,7 @@ interface Invoice {
 interface CustoFileMetadata {
   success: boolean;
   files: Array<{
-    fullpath: string;
+    filePath: string;
     name: string;
     contents: string;
   }>;

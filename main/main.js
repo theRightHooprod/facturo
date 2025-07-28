@@ -60,30 +60,54 @@ ipcMain.handle("select-directory", async () => {
   if (result.canceled) return { success: false, error: "User canceled" };
 
   const dirPath = result.filePaths[0];
+
   try {
-    const filePaths = fs.readdirSync(dirPath);
-    const files = filePaths.map((filePath) => {
-      let fullpath = path.join(dirPath, filePath);
-      let pathMetadata = path.parse(filePath);
+    // Read directory recursively and filter for files only
+    const filePaths = fs
+      .readdirSync(dirPath, { recursive: true, withFileTypes: true })
+      .filter((item) => item.isFile())
+      .map((item) => (item.path ? path.join(item.path, item.name) : item.name)); // Handle recursive path
 
-      if (pathMetadata.ext == ".xml") {
-        const contents = fs.readFileSync(fullpath, "utf-8");
+    const files = filePaths
+      .map((filePath) => {
+        const pathMetadata = path.parse(filePath);
 
-        return {
-          fullpath: fullpath,
-          name: pathMetadata.name,
-          contents: contents,
-        };
-      }
+        // Check for supported file extensions
+        if ([".xml", ".pdf"].includes(pathMetadata.ext.toLowerCase())) {
+          const fileObject = {
+            filePath,
+            name: pathMetadata.name,
+          };
 
-      return {
-        fullpath: fullpath,
-        name: pathMetadata.name,
-      };
-    });
-    return { success: true, files };
+          // Read contents only for XML files
+          if (pathMetadata.ext.toLowerCase() === ".xml") {
+            try {
+              fileObject.contents = fs.readFileSync(filePath, "utf-8");
+            } catch (readError) {
+              console.error(
+                `Error reading file ${filePath}:`,
+                readError.message,
+              );
+              return null;
+            }
+          }
+
+          return fileObject;
+        }
+        return null;
+      })
+      .filter(Boolean); // Remove null/undefined values
+
+    return {
+      success: true,
+      files,
+    };
   } catch (error) {
-    return { success: false, error: error.message };
+    console.error("Directory processing error:", error.message);
+    return {
+      success: false,
+      error: error.message,
+    };
   }
 });
 

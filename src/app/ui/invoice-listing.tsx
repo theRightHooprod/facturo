@@ -37,7 +37,7 @@ export function InvoiceListing() {
               : null;
 
             return {
-              fullPath: file.fullpath,
+              filePath: file.filePath,
               name: file.name,
               contents: content,
             } as File;
@@ -56,8 +56,10 @@ export function InvoiceListing() {
         (metadata: File) => metadata.contents === null,
       );
 
+      console.log(onlyPdffiles);
+
       const pdfMap = new Map(
-        onlyPdffiles.map((pdf) => [pdf.name, pdf.fullPath]),
+        onlyPdffiles.map((pdf) => [pdf.name, pdf.filePath]),
       );
 
       const mergedFiles: Invoice[] = onlyXMLfiles.map((xml) => {
@@ -77,10 +79,12 @@ export function InvoiceListing() {
           ][0]["cfdi:Impuestos"][0]["cfdi:Traslados"][0]["cfdi:Traslado"][0]
             .attributes.Importe,
           total: xml.contents?.["cfdi:Comprobante"].attributes.Total,
-          fullpath: xml.fullPath,
+          fullpath: xml.filePath,
           pdfPath, // will be undefined if no match
         } as Invoice;
       });
+
+      // console.log(mergedFiles);
 
       setFiles(mergedFiles);
     }
