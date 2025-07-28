@@ -18,6 +18,8 @@ const serve = require("electron-serve");
 const path = require("path");
 const fs = require("fs");
 
+let mainWindow;
+
 const appServe = app.isPackaged
   ? serve({
       directory: path.join(__dirname, "../out"),
@@ -108,6 +110,56 @@ ipcMain.handle("select-directory", async () => {
       success: false,
       error: error.message,
     };
+  }
+});
+
+// IPC handler to prompt user for a directory and save files
+ipcMain.handle("save-files-to-directory", async (event, files) => {
+  try {
+    // Show dialog to select a directory
+    const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+      properties: ["openDirectory"],
+      title: "Select Directory to Save Files",
+    });
+
+    if (canceled || !filePaths.length) {
+      return { success: false, error: "No directory selected" };
+    }
+
+    const targetDir = filePaths[0];
+    const savedFiles = [];
+
+    // Process each file
+    for (const file of files) {
+      const filePath = path.join(
+        targetDir,
+        `${file.name}${file.ext || ".xml"}`,
+      );
+      const dirPath = path.dirname(filePath);
+
+      // Ensure the directory exists (recursive creation)
+      if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+      }
+
+      // Write file content if provided (e.g., for XML files)
+      if (file.contents) {
+        fs.writeFileSync(filePath, file.contents, "utf-8");
+      } else {
+        // For non-text files (e.g., PDF), you might copy or generate content
+        fs.writeFileSync(filePath, ""); // Placeholder for empty file
+      }
+
+      savedFiles.push({
+        fullPath: filePath,
+        name: file.name,
+      });
+    }
+
+    return { success: true, files: savedFiles };
+  } catch (error) {
+    console.error("Error saving files:", error.message);
+    return { success: false, error: error.message };
   }
 });
 

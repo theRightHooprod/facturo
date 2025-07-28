@@ -19,6 +19,7 @@ import React, { useState } from "react";
 import { Button } from "@/app/ui/button";
 import path from "path";
 import xml2js from "xml2js";
+import arrayToCsv from "@/app/utils";
 
 export function InvoiceListing() {
   const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
@@ -56,8 +57,6 @@ export function InvoiceListing() {
         (metadata: File) => metadata.contents === null,
       );
 
-      console.log(onlyPdffiles);
-
       const pdfMap = new Map(
         onlyPdffiles.map((pdf) => [pdf.name, pdf.filePath]),
       );
@@ -84,14 +83,56 @@ export function InvoiceListing() {
         } as Invoice;
       });
 
-      // console.log(mergedFiles);
-
       setFiles(mergedFiles);
     }
   };
 
   const handleOpenButton = async (fullPath: string): Promise<void> => {
     await window.electronAPI.openPath(fullPath);
+  };
+
+  const handleToCsvButton = async (fileMetadata: Invoice[]) => {
+    const csvData: string[][] = fileMetadata.map((invoice) => [
+      invoice.date,
+      "",
+      invoice.serie + " " + invoice.folio,
+      "",
+      invoice.emisor,
+      invoice.subtotal,
+      invoice.iva.toString(),
+      invoice.total,
+    ]);
+
+    const headers: string[] = [
+      "Emisión",
+      "",
+      "Folio",
+      "RFC",
+      "Emisor",
+      "Subtotal",
+      "Iva",
+      "Total",
+    ];
+
+    csvData.unshift(headers);
+
+    try {
+      const result = await window.electronAPI.saveFile([
+        {
+          name: "exported_csv",
+          ext: ".csv",
+          contents: arrayToCsv(csvData),
+        },
+      ]);
+
+      if (result.success) {
+        window.alert("Se ha exportado correctamente.");
+      } else {
+        window.alert(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -102,6 +143,17 @@ export function InvoiceListing() {
       >
         <div className="dark:text-black">Select directory</div>
       </Button>
+      <br></br>
+      {fileMetadata ? (
+        <Button
+          onClick={() => handleToCsvButton(fileMetadata!)}
+          className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
+        >
+          <div className="dark:text-black">Export to CSV</div>
+        </Button>
+      ) : (
+        <div></div>
+      )}
       <br></br>
       <div className="flex flex-col gap-2.5">
         {fileMetadata &&

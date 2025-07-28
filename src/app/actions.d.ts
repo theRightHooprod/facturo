@@ -87,6 +87,7 @@ interface Window {
   electronAPI: {
     selectDirectory: () => Promise<CustoFileMetadata>;
     openPath: (string) => Promise<string>;
+    saveFile: (any) => Promise<{ success; files; error }>;
   };
   void;
 }

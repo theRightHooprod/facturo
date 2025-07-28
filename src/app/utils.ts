@@ -13,16 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-const { contextBridge, ipcRenderer, shell } = require("electron");
-
-contextBridge.exposeInMainWorld("electronAPI", {
-  on: (channel, callback) => {
-    ipcRenderer.on(channel, callback);
-  },
-  send: (channel, args) => {
-    ipcRenderer.send(channel, args);
-  },
-  selectDirectory: () => ipcRenderer.invoke("select-directory"),
-  openPath: (filePath) => ipcRenderer.send("open-file", filePath),
-  saveFile: (files) => ipcRenderer.invoke("save-files-to-directory", files),
-});
+export default function arrayToCsv(data: string[][]): string {
+  return data
+    .map((row) => row.map((item) => `"${item.replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+}
