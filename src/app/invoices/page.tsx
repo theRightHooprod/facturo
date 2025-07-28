@@ -14,5 +14,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 export default function InvoicesPage() {
-  return <div>Hello, I'm an invoice page</div>;
+  return <div>Hello, I are an invoice page</div>;
 }

@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 // import { LoginForm } from "./ui/login_form";
 import { InvoiceListing } from "@/app/ui/invoice-listing";
 
