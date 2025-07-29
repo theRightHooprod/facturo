@@ -106,7 +106,7 @@ export function InvoiceListing() {
 
     const headers: string[] = [
       "Emisión",
-      "",
+      "Concepto",
       "Folio",
       "RFC",
       "Emisor",
