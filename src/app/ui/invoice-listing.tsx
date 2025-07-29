@@ -96,7 +96,7 @@ export function InvoiceListing() {
     const csvData: string[][] = fileMetadata.map((invoice) => [
       invoice.date,
       "",
-      invoice.serie + " " + invoice.folio,
+      (invoice.serie == undefined ? "" : invoice.serie) + " " + invoice.folio,
       invoice.emisorRfc,
       invoice.emisor,
       invoice.subtotal,
