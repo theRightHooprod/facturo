@@ -18,8 +18,6 @@ const serve = require("electron-serve");
 const path = require("path");
 const fs = require("fs");
 
-let mainWindow;
-
 const appServe = app.isPackaged
   ? serve({
       directory: path.join(__dirname, "../out"),
@@ -113,8 +111,8 @@ ipcMain.handle("select-directory", async () => {
   }
 });
 
-// IPC handler to prompt user for a directory and save files
 ipcMain.handle("save-files-to-directory", async (event, files) => {
+  let mainWindow = null; // Assume mainWindow is passed or accessible
   try {
     // Show dialog to select a directory
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
@@ -128,13 +126,14 @@ ipcMain.handle("save-files-to-directory", async (event, files) => {
 
     const targetDir = filePaths[0];
     const savedFiles = [];
+    const skippedFiles = [];
 
     // Process each file
     for (const file of files) {
-      const filePath = path.join(
-        targetDir,
-        `${file.name}${file.ext || ".xml"}`,
-      );
+      const fileExtension =
+        file.ext ||
+        (file.contents && file.contents.includes(",") ? ".csv" : ".xml");
+      const filePath = path.join(targetDir, `${file.name}${fileExtension}`);
       const dirPath = path.dirname(filePath);
 
       // Ensure the directory exists (recursive creation)
@@ -142,12 +141,37 @@ ipcMain.handle("save-files-to-directory", async (event, files) => {
         fs.mkdirSync(dirPath, { recursive: true });
       }
 
-      // Write file content if provided (e.g., for XML files)
+      // Check if file already exists
+      if (fs.existsSync(filePath)) {
+        const response = await dialog.showMessageBox(mainWindow, {
+          type: "question",
+          buttons: ["Replace", "Skip"],
+          defaultId: 1, // Default to "Skip"
+          title: "File Already Exists",
+          message: `The file "${file.name}${fileExtension}" already exists in the selected directory.`,
+          detail: "Do you want to replace it or skip saving this file?",
+        });
+
+        // If user chooses "Skip" (response 1), skip this file
+        if (response.response === 1) {
+          skippedFiles.push({
+            name: file.name,
+            fullPath: filePath,
+            reason: "Skipped due to existing file",
+          });
+          continue;
+        }
+      }
+
+      // Write file content
       if (file.contents) {
-        fs.writeFileSync(filePath, file.contents, "utf-8");
+        // Add UTF-8 BOM for CSV files
+        const isCsv = fileExtension.toLowerCase() === ".csv";
+        const contentToWrite = isCsv ? "\uFEFF" + file.contents : file.contents;
+        fs.writeFileSync(filePath, contentToWrite, { encoding: "utf8" });
       } else {
-        // For non-text files (e.g., PDF), you might copy or generate content
-        fs.writeFileSync(filePath, ""); // Placeholder for empty file
+        // For non-text files (e.g., PDF), write placeholder or copy content
+        fs.writeFileSync(filePath, "");
       }
 
       savedFiles.push({
@@ -156,7 +180,11 @@ ipcMain.handle("save-files-to-directory", async (event, files) => {
       });
     }
 
-    return { success: true, files: savedFiles };
+    return {
+      success: true,
+      files: savedFiles,
+      skippedFiles: skippedFiles.length > 0 ? skippedFiles : undefined,
+    };
   } catch (error) {
     console.error("Error saving files:", error.message);
     return { success: false, error: error.message };
