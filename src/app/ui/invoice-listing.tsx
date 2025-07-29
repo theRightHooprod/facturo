@@ -79,6 +79,8 @@ export function InvoiceListing() {
           total: xml.contents?.["cfdi:Comprobante"].attributes.Total,
           fullpath: xml.filePath,
           pdfPath, // will be undefined if no match
+          emisorRfc:
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0].attributes.Rfc,
         } as Invoice;
       });
 
@@ -95,7 +97,7 @@ export function InvoiceListing() {
       invoice.date,
       "",
       invoice.serie + " " + invoice.folio,
-      "",
+      invoice.emisorRfc,
       invoice.emisor,
       invoice.subtotal,
       invoice.iva.toString(),
@@ -170,6 +172,10 @@ export function InvoiceListing() {
                 <p>
                   <b>Fecha de generación: </b>
                   {metadata.date}
+                </p>
+                <p>
+                  <b>RFC: </b>
+                  {metadata.emisorRfc}
                 </p>
                 <p>
                   <b>Subtotal: </b>

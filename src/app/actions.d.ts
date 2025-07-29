@@ -66,6 +66,7 @@ interface Invoice {
   serie: string;
   folio: string;
   emisor: string;
+  emisorRfc: string;
   date: string;
   subtotal: string;
   iva: number;
