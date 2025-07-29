@@ -138,23 +138,27 @@ export function InvoiceListing() {
 
   return (
     <div className="w-full px-5">
-      <Button
-        onClick={() => handleLoadDir()}
-        className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
-      >
-        <div className="dark:text-black">Select directory</div>
-      </Button>
-      <br></br>
-      {fileMetadata ? (
+      <div className="flex gap-2">
         <Button
-          onClick={() => handleToCsvButton(fileMetadata!)}
+          onClick={() => handleLoadDir()}
           className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
         >
-          <div className="dark:text-black">Export to CSV</div>
+          <div className="dark:text-black">
+            {fileMetadata ? "Switch directory" : "Select directory"}
+          </div>
         </Button>
-      ) : (
-        <div></div>
-      )}
+        <br></br>
+        {fileMetadata ? (
+          <Button
+            onClick={() => handleToCsvButton(fileMetadata!)}
+            className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
+          >
+            <div className="dark:text-black">Export to CSV</div>
+          </Button>
+        ) : (
+          <div></div>
+        )}
+      </div>
       <br></br>
       <div className="flex flex-col gap-2.5">
         {fileMetadata &&
