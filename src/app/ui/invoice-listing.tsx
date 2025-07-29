@@ -18,7 +18,7 @@
 import React, { useState } from "react";
 import { Button } from "@/app/ui/button";
 import xml2js from "xml2js";
-import arrayToCsv from "@/app/utils";
+import { arrayToCsv, formatDateTimeForExcel } from "@/app/utils";
 
 export function InvoiceListing() {
   const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
@@ -94,7 +94,7 @@ export function InvoiceListing() {
 
   const handleToCsvButton = async (fileMetadata: Invoice[]) => {
     const csvData: string[][] = fileMetadata.map((invoice) => [
-      invoice.date,
+      formatDateTimeForExcel(invoice.date),
       "",
       (invoice.serie == undefined ? "" : invoice.serie) + " " + invoice.folio,
       invoice.emisorRfc,
@@ -122,7 +122,7 @@ export function InvoiceListing() {
         {
           name: "exported_csv",
           ext: ".csv",
-          contents: arrayToCsv(csvData),
+          contents: "\uFEFF" + arrayToCsv(csvData),
         },
       ]);
 
@@ -171,7 +171,7 @@ export function InvoiceListing() {
               <div className="px-6 pb-6">
                 <p>
                   <b>Fecha de generación: </b>
-                  {metadata.date}
+                  {new Date(metadata.date).toLocaleString("es-MX")}
                 </p>
                 <p>
                   <b>RFC: </b>
