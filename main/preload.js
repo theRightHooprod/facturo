@@ -24,5 +24,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   selectDirectory: () => ipcRenderer.invoke("select-directory"),
   openPath: (filePath) => ipcRenderer.send("open-file", filePath),
+  showItemInFolder: (filePath) =>
+    ipcRenderer.send("show-item-in-folder", filePath),
   saveFile: (files) => ipcRenderer.invoke("save-files-to-directory", files),
 });

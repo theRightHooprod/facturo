@@ -195,6 +195,10 @@ ipcMain.on("open-file", (event, filePath) => {
   shell.openPath(filePath);
 });
 
+ipcMain.on("show-item-in-folder", (event, filePath) => {
+  shell.showItemInFolder(filePath);
+});
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();

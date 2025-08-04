@@ -92,6 +92,12 @@ export function InvoiceListing() {
     await window.electronAPI.openPath(fullPath);
   };
 
+  const handleShowItemInFolderButton = async (
+    fullPath: string,
+  ): Promise<void> => {
+    await window.electronAPI.showItemInFolder(fullPath);
+  };
+
   const handleToCsvButton = async (fileMetadata: Invoice[]) => {
     const csvData: string[][] = fileMetadata.map((invoice) => [
       formatDateTimeForExcel(invoice.date),
@@ -211,6 +217,20 @@ export function InvoiceListing() {
                       className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
                     >
                       <div className="dark:text-white">Show .pdf</div>
+                    </Button>
+                  ) : (
+                    <div></div>
+                  )}
+                  {metadata.pdfPath ? (
+                    <Button
+                      onClick={() =>
+                        handleShowItemInFolderButton(metadata.pdfPath!)
+                      }
+                      className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
+                    >
+                      <div className="dark:text-white">
+                        Open in file explorer
+                      </div>
                     </Button>
                   ) : (
                     <div></div>
