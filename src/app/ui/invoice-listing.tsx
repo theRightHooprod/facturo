@@ -19,6 +19,7 @@ import React, { useState } from "react";
 import { Button } from "@/app/ui/button";
 import xml2js from "xml2js";
 import { arrayToCsv, formatDateTimeForExcel } from "@/app/utils";
+import InvoiceContainer from "@/app/ui/invoice/invoice-container";
 
 export function InvoiceListing() {
   const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
@@ -88,20 +89,8 @@ export function InvoiceListing() {
         } as Invoice;
       });
 
-      console.log(mergedFiles);
-
       setFiles(mergedFiles);
     }
-  };
-
-  const handleOpenButton = async (fullPath: string): Promise<void> => {
-    await window.electronAPI.openPath(fullPath);
-  };
-
-  const handleShowItemInFolderButton = async (
-    fullPath: string,
-  ): Promise<void> => {
-    await window.electronAPI.showItemInFolder(fullPath);
   };
 
   const handleToCsvButton = async (fileMetadata: Invoice[]) => {
@@ -173,88 +162,9 @@ export function InvoiceListing() {
       </div>
       <br></br>
       <div className="flex flex-col gap-2.5">
-        {fileMetadata &&
-          Array.from(fileMetadata).map((metadata: Invoice, index) => (
-            <details
-              open={true}
-              key={index}
-              className="cursor-pointer rounded-2xl bg-gray-100 text-black select-none marker:text-transparent"
-            >
-              <summary className="h-full w-full p-6">
-                {metadata.serie}
-                {metadata.folio} <b>{metadata.emisor}</b>
-              </summary>
-              <div className="px-6 pb-6">
-                <p>
-                  <b>Fecha de generación: </b>
-                  {metadata.date
-                    ? new Date(metadata.date).toLocaleString("es-MX")
-                    : ""}
-                </p>
-                <p>
-                  <b>RFC: </b>
-                  {metadata.emisorRfc}
-                </p>
-                <p>
-                  <b>Subtotal: </b>
-                  {metadata.subtotal}
-                </p>
-                <p>
-                  <b>Impuestos: </b>
-                  {metadata.iva}
-                </p>
-                <p>
-                  <b>Total: </b>
-                  {metadata.total}
-                </p>
-                {metadata.notes ? (
-                  <p>
-                    <b>Notas: </b>
-                    {metadata.notes}
-                  </p>
-                ) : (
-                  <div></div>
-                )}
-                <div className="my-2 border border-t-gray-400"></div>
-                <div className="flex flex-row gap-1">
-                  {metadata.fullpath ? (
-                    <Button
-                      onClick={() => handleOpenButton(metadata.fullpath!)}
-                      className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
-                    >
-                      <div className="dark:text-white">Show .xml</div>
-                    </Button>
-                  ) : (
-                    <div></div>
-                  )}
-                  {metadata.pdfPath ? (
-                    <Button
-                      onClick={() => handleOpenButton(metadata.pdfPath!)}
-                      className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
-                    >
-                      <div className="dark:text-white">Show .pdf</div>
-                    </Button>
-                  ) : (
-                    <div></div>
-                  )}
-                  {metadata.pdfPath ? (
-                    <Button
-                      onClick={() =>
-                        handleShowItemInFolderButton(metadata.pdfPath!)
-                      }
-                      className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
-                    >
-                      <div className="dark:text-white">
-                        Open in file explorer
-                      </div>
-                    </Button>
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
-              </div>
-            </details>
-          ))}
+        {fileMetadata?.map((metadata: Invoice, index) => (
+          <InvoiceContainer key={index} invoice={metadata} />
+        ))}
       </div>
     </div>
   );
