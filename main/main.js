@@ -31,6 +31,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
+    icon: __dirname + "/icon.ico",
     titleBarStyle: "hidden",
     ...(process.platform !== "darwin" ? { titleBarOverlay: true } : {}),
   });
