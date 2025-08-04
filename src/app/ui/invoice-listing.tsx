@@ -81,8 +81,14 @@ export function InvoiceListing() {
           pdfPath, // will be undefined if no match
           emisorRfc:
             xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0].attributes.Rfc,
+          notes:
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Addenda"][0][
+              "addendaFacto:addendaFacto"
+            ][0]["addendaFacto:notas"],
         } as Invoice;
       });
+
+      console.log(mergedFiles);
 
       setFiles(mergedFiles);
     }
@@ -100,14 +106,14 @@ export function InvoiceListing() {
 
   const handleToCsvButton = async (fileMetadata: Invoice[]) => {
     const csvData: string[][] = fileMetadata.map((invoice) => [
-      formatDateTimeForExcel(invoice.date),
+      invoice.date?.toString() ?? formatDateTimeForExcel(invoice.date!) ?? "",
       "",
-      (invoice.serie == undefined ? "" : invoice.serie) + " " + invoice.folio,
-      invoice.emisorRfc,
-      invoice.emisor,
-      invoice.subtotal,
-      invoice.iva.toString(),
-      invoice.total,
+      `${invoice.serie ?? ""} ${invoice.folio}`,
+      invoice.emisorRfc ?? "",
+      invoice.emisor ?? "",
+      invoice.subtotal ?? "",
+      invoice.iva?.toString() ?? "",
+      invoice.total ?? "",
     ]);
 
     const headers: string[] = [
@@ -181,7 +187,9 @@ export function InvoiceListing() {
               <div className="px-6 pb-6">
                 <p>
                   <b>Fecha de generación: </b>
-                  {new Date(metadata.date).toLocaleString("es-MX")}
+                  {metadata.date
+                    ? new Date(metadata.date).toLocaleString("es-MX")
+                    : ""}
                 </p>
                 <p>
                   <b>RFC: </b>
@@ -199,6 +207,14 @@ export function InvoiceListing() {
                   <b>Total: </b>
                   {metadata.total}
                 </p>
+                {metadata.notes ? (
+                  <p>
+                    <b>Notas: </b>
+                    {metadata.notes}
+                  </p>
+                ) : (
+                  <div></div>
+                )}
                 <div className="my-2 border border-t-gray-400"></div>
                 <div className="flex flex-row gap-1">
                   {metadata.fullpath ? (

@@ -15,22 +15,22 @@
 "use client";
 
 interface File {
-  filePath: string;
-  name: string;
+  filePath: string | undefined;
+  name: string | undefined;
   contents: {
     "cfdi:Comprobante": {
       attributes: {
-        Serie: string;
-        Folio: string;
-        Fecha: string;
-        SubTotal: string;
-        Total: string;
+        Serie: string | undefined;
+        Folio: string | undefined;
+        Fecha: string | undefined;
+        SubTotal: string | undefined;
+        Total: string | undefined;
       };
       "cfdi:Emisor": [
         {
           attributes: {
-            Nombre: "fdf";
-            Rfc: "dcffdff";
+            Nombre: string | undefined;
+            Rfc: string | undefined;
           };
         },
       ];
@@ -45,7 +45,7 @@ interface File {
                       "cfdi:Traslado": [
                         {
                           attributes: {
-                            Importe: number;
+                            Importe: number | undefined;
                           };
                         },
                       ];
@@ -57,22 +57,32 @@ interface File {
           ];
         },
       ];
+      "cfdi:Addenda": [
+        {
+          "addendaFacto:addendaFacto": [
+            {
+              "addendaFacto:notas": string | undefined;
+            },
+          ];
+        },
+      ];
     };
   } | null;
   pdfPath?: string;
 }
 
 interface Invoice {
-  serie: string;
-  folio: string;
-  emisor: string;
-  emisorRfc: string;
-  date: string;
-  subtotal: string;
-  iva: number;
-  total: string;
-  fullpath: string;
+  serie: string | undefined;
+  folio: string | undefined;
+  emisor: string | undefined;
+  emisorRfc: string | undefined;
+  date: string | undefined;
+  subtotal: string | undefined;
+  iva: number | undefined;
+  total: string | undefined;
+  fullpath: string | undefined;
   pdfPath: string | undefined; // will be undefined if no match
+  notes: string | undefined;
 }
 
 interface CustoFileMetadata {
