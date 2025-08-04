@@ -121,7 +121,7 @@ export function InvoiceListing() {
     try {
       const result = await window.electronAPI.saveFile([
         {
-          name: "exported_csv",
+          name: "exported",
           ext: ".csv",
           contents: "\uFEFF" + arrayToCsv(csvData),
         },
@@ -149,15 +149,13 @@ export function InvoiceListing() {
           </div>
         </Button>
         <br></br>
-        {fileMetadata ? (
+        {fileMetadata && (
           <Button
-            onClick={() => handleToCsvButton(fileMetadata!)}
+            onClick={() => handleToCsvButton(fileMetadata)}
             className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
           >
             <div className="dark:text-black">Export to CSV</div>
           </Button>
-        ) : (
-          <div></div>
         )}
       </div>
       <br></br>
