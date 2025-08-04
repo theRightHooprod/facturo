@@ -15,20 +15,55 @@
 "use client";
 
 interface File {
-  fullPath: string;
-  name: string;
+  filePath: string | undefined;
+  name: string | undefined;
   contents: {
     "cfdi:Comprobante": {
       attributes: {
-        Serie: string;
-        Folio: string;
+        Serie: string | undefined;
+        Folio: string | undefined;
+        Fecha: string | undefined;
+        SubTotal: string | undefined;
+        Total: string | undefined;
       };
       "cfdi:Emisor": [
         {
           attributes: {
-            Nombre: "fdf";
-            Rfc: "dcffdff";
+            Nombre: string | undefined;
+            Rfc: string | undefined;
           };
+        },
+      ];
+      "cfdi:Conceptos": [
+        {
+          "cfdi:Concepto": [
+            {
+              "cfdi:Impuestos": [
+                {
+                  "cfdi:Traslados": [
+                    {
+                      "cfdi:Traslado": [
+                        {
+                          attributes: {
+                            Importe: number | undefined;
+                          };
+                        },
+                      ];
+                    },
+                  ];
+                },
+              ];
+            },
+          ];
+        },
+      ];
+      "cfdi:Addenda": [
+        {
+          "addendaFacto:addendaFacto": [
+            {
+              "addendaFacto:notas": string | undefined;
+            },
+          ];
         },
       ];
     };
@@ -36,10 +71,24 @@ interface File {
   pdfPath?: string;
 }
 
+interface Invoice {
+  serie: string | undefined;
+  folio: string | undefined;
+  emisor: string | undefined;
+  emisorRfc: string | undefined;
+  date: string | undefined;
+  subtotal: string | undefined;
+  iva: number | undefined;
+  total: string | undefined;
+  fullpath: string | undefined;
+  pdfPath: string | undefined; // will be undefined if no match
+  notes: string | undefined;
+}
+
 interface CustoFileMetadata {
   success: boolean;
   files: Array<{
-    fullpath: string;
+    filePath: string;
     name: string;
     contents: string;
   }>;
@@ -49,6 +98,8 @@ interface Window {
   electronAPI: {
     selectDirectory: () => Promise<CustoFileMetadata>;
     openPath: (string) => Promise<string>;
+    showItemInFolder: (string) => Promise<string>;
+    saveFile: (any) => Promise<{ success; files; error }>;
   };
   void;
 }

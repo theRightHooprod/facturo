@@ -17,12 +17,12 @@
 
 import React, { useState } from "react";
 import { Button } from "@/app/ui/button";
-import path from "path";
-// import { xmlToJson, parseXML } from "../lib/actions";
 import xml2js from "xml2js";
+import { arrayToCsv, formatDateTimeForExcel } from "@/app/utils";
+import InvoiceContainer from "@/app/ui/invoice/invoice-container";
 
 export function InvoiceListing() {
-  const [fileMetadata, setFiles] = useState<File[] | null>(null);
+  const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
 
   const handleLoadDir = async (): Promise<void> => {
     const result: CustoFileMetadata =
@@ -38,7 +38,7 @@ export function InvoiceListing() {
               : null;
 
             return {
-              fullPath: file.fullpath,
+              filePath: file.filePath,
               name: file.name,
               contents: content,
             } as File;
@@ -58,78 +58,111 @@ export function InvoiceListing() {
       );
 
       const pdfMap = new Map(
-        onlyPdffiles.map((pdf) => [pdf.name, pdf.fullPath]),
+        onlyPdffiles.map((pdf) => [pdf.name, pdf.filePath]),
       );
 
-      const mergedFiles = onlyXMLfiles.map((xml) => {
+      const mergedFiles: Invoice[] = onlyXMLfiles.map((xml) => {
         const baseName = xml.name;
         const pdfPath = pdfMap.get(baseName);
 
         return {
-          ...xml,
+          serie: xml.contents?.["cfdi:Comprobante"].attributes.Serie,
+          folio: xml.contents?.["cfdi:Comprobante"].attributes.Folio,
+          emisor:
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0].attributes
+              .Nombre,
+          date: xml.contents?.["cfdi:Comprobante"].attributes.Fecha,
+          subtotal: xml.contents?.["cfdi:Comprobante"].attributes.SubTotal,
+          iva: xml.contents?.["cfdi:Comprobante"]["cfdi:Conceptos"][0][
+            "cfdi:Concepto"
+          ][0]["cfdi:Impuestos"][0]["cfdi:Traslados"][0]["cfdi:Traslado"][0]
+            .attributes.Importe,
+          total: xml.contents?.["cfdi:Comprobante"].attributes.Total,
+          fullpath: xml.filePath,
           pdfPath, // will be undefined if no match
-        };
+          emisorRfc:
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0].attributes.Rfc,
+          notes:
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Addenda"][0][
+              "addendaFacto:addendaFacto"
+            ][0]["addendaFacto:notas"],
+        } as Invoice;
       });
-
-      console.log(mergedFiles);
 
       setFiles(mergedFiles);
     }
   };
 
-  const handleOpenButton = async (fullPath: string): Promise<void> => {
-    await window.electronAPI.openPath(fullPath);
+  const handleToCsvButton = async (fileMetadata: Invoice[]) => {
+    const csvData: string[][] = fileMetadata.map((invoice) => [
+      invoice.date?.toString() ?? formatDateTimeForExcel(invoice.date!) ?? "",
+      "",
+      `${invoice.serie ?? ""} ${invoice.folio}`,
+      invoice.emisorRfc ?? "",
+      invoice.emisor ?? "",
+      invoice.subtotal ?? "",
+      invoice.iva?.toString() ?? "",
+      invoice.total ?? "",
+    ]);
+
+    const headers: string[] = [
+      "Emisión",
+      "Concepto",
+      "Folio",
+      "RFC",
+      "Emisor",
+      "Subtotal",
+      "Iva",
+      "Total",
+    ];
+
+    csvData.unshift(headers);
+
+    try {
+      const result = await window.electronAPI.saveFile([
+        {
+          name: "exported",
+          ext: ".csv",
+          contents: "\uFEFF" + arrayToCsv(csvData),
+        },
+      ]);
+
+      if (result.success) {
+        window.alert("Se ha exportado correctamente.");
+      } else {
+        window.alert(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <div className="w-full px-5">
-      <Button
-        onClick={() => handleLoadDir()}
-        className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
-      >
-        <div className="dark:text-black">Select directory</div>
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          onClick={() => handleLoadDir()}
+          className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
+        >
+          <div className="dark:text-black">
+            {fileMetadata ? "Switch directory" : "Select directory"}
+          </div>
+        </Button>
+        {fileMetadata && (
+          <Button
+            onClick={() => handleToCsvButton(fileMetadata)}
+            className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
+          >
+            <div className="dark:text-black">Export to CSV</div>
+          </Button>
+        )}
+      </div>
       <br></br>
-      <ul>
-        {fileMetadata &&
-          Array.from(fileMetadata).map((metadata: File, index) => (
-            <li
-              key={index}
-              className="mt-5 flex flex-row place-content-between items-center"
-            >
-              <div>
-                {metadata.contents?.["cfdi:Comprobante"].attributes.Serie}{" "}
-                {metadata.contents?.["cfdi:Comprobante"].attributes.Folio}
-              </div>
-              <div>
-                {
-                  metadata.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0]
-                    .attributes.Nombre
-                }
-              </div>
-              {metadata.fullPath ? (
-                <Button
-                  onClick={() => handleOpenButton(metadata.fullPath!)}
-                  className="bg-white hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
-                >
-                  <div className="dark:text-black">xml</div>
-                </Button>
-              ) : (
-                <div></div>
-              )}
-              {metadata.pdfPath ? (
-                <Button
-                  onClick={() => handleOpenButton(metadata.pdfPath!)}
-                  className="bg-white hover:bg-gray-200 disabled:hover:bg-gray-50 md:hover:bg-gray-200"
-                >
-                  <div className="dark:text-black">pdf</div>
-                </Button>
-              ) : (
-                <div></div>
-              )}
-            </li>
-          ))}
-      </ul>
+      <div className="flex flex-col gap-2.5">
+        {fileMetadata?.map((metadata: Invoice, index) => (
+          <InvoiceContainer key={index} invoice={metadata} />
+        ))}
+      </div>
     </div>
   );
 }
