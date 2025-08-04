@@ -17,4 +17,20 @@
 
 ![app's icon](logo.png)
 
-Special thanks to @robotoskunk for the app's icon <3
+Special thanks to [RobotoSkunk](https://github.com/RobotoSkunk) for the app's icon ❤️
+
+# Facturo
+
+Open source Mexican's SAT invoices manager. It Loads an entire folder and list's invoices and its metadata.
+
+Requirements
+
+`nodejs > v22.15.0`
+
+To compile from source just:
+
+`npm i`
+
+`npm run dev`
+
+ir uses electron to be compatible with Window 11 dektop app.
