@@ -33,4 +33,4 @@ To compile from source just:
 
 `npm run dev`
 
-ir uses electron to be compatible with Window 11 dektop app.
+It uses electron to be compatible with Window 11 desktop app.
