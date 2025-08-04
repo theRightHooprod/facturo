@@ -148,7 +148,6 @@ export function InvoiceListing() {
             {fileMetadata ? "Switch directory" : "Select directory"}
           </div>
         </Button>
-        <br></br>
         {fileMetadata && (
           <Button
             onClick={() => handleToCsvButton(fileMetadata)}
