@@ -8,13 +8,17 @@
   "scripts": {
     "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\"",
     "build": "next build && electron-builder",
+    "build:win": "next build && electron-builder --win",
+    "build:linux": "next build && electron-builder --linux",
+    "build:mac": "next build && electron-builder --mac",
+    "rebuild": "electron-rebuild",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "clsx": "^2.1.1",
     "electron-serve": "^2.1.1",
-    "next": "15.3.2",
+    "next": "^15.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "xml2js": "^0.6.2"
