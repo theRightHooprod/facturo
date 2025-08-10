@@ -26,46 +26,62 @@ interface File {
         SubTotal: string | undefined;
         Total: string | undefined;
       };
-      "cfdi:Emisor": [
-        {
-          attributes: {
-            Nombre: string | undefined;
-            Rfc: string | undefined;
-          };
-        },
-      ];
-      "cfdi:Conceptos": [
-        {
-          "cfdi:Concepto": [
+      "cfdi:Emisor":
+        | [
             {
-              "cfdi:Impuestos": [
-                {
-                  "cfdi:Traslados": [
+              attributes: {
+                Nombre: string | undefined;
+                Rfc: string | undefined;
+              };
+            },
+          ]
+        | undefined;
+      "cfdi:Conceptos":
+        | [
+            {
+              "cfdi:Concepto":
+                | [
                     {
-                      "cfdi:Traslado": [
-                        {
-                          attributes: {
-                            Importe: number | undefined;
-                          };
-                        },
-                      ];
+                      "cfdi:Impuestos":
+                        | [
+                            {
+                              "cfdi:Traslados":
+                                | [
+                                    {
+                                      "cfdi:Traslado":
+                                        | [
+                                            {
+                                              attributes: {
+                                                Importe: number | undefined;
+                                              };
+                                            },
+                                          ]
+                                        | undefined;
+                                    },
+                                  ]
+                                | undefined;
+                            },
+                          ]
+                        | undefined;
                     },
-                  ];
-                },
-              ];
+                  ]
+                | undefined;
             },
-          ];
-        },
-      ];
-      "cfdi:Addenda": [
-        {
-          "addendaFacto:addendaFacto": [
+          ]
+        | undefined;
+      "cfdi:Addenda":
+        | [
             {
-              "addendaFacto:notas": string | undefined;
+              "addendaFacto:addendaFacto":
+                | [
+                    {
+                      "addendaFacto:notas": string | undefined;
+                    },
+                  ]
+                | undefined;
             },
-          ];
-        },
-      ];
+          ]
+        | undefined;
     };
   } | null;
   pdfPath?: string;

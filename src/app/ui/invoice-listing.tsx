@@ -69,23 +69,25 @@ export function InvoiceListing() {
           serie: xml.contents?.["cfdi:Comprobante"].attributes.Serie,
           folio: xml.contents?.["cfdi:Comprobante"].attributes.Folio,
           emisor:
-            xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0].attributes
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"]?.[0].attributes
               .Nombre,
           date: xml.contents?.["cfdi:Comprobante"].attributes.Fecha,
           subtotal: xml.contents?.["cfdi:Comprobante"].attributes.SubTotal,
-          iva: xml.contents?.["cfdi:Comprobante"]["cfdi:Conceptos"][0][
+          iva: xml.contents?.["cfdi:Comprobante"]["cfdi:Conceptos"]?.[0][
             "cfdi:Concepto"
-          ][0]["cfdi:Impuestos"][0]["cfdi:Traslados"][0]["cfdi:Traslado"][0]
-            .attributes.Importe,
+          ]?.[0]["cfdi:Impuestos"]?.[0]["cfdi:Traslados"]?.[0][
+            "cfdi:Traslado"
+          ]?.[0].attributes.Importe,
           total: xml.contents?.["cfdi:Comprobante"].attributes.Total,
           fullpath: xml.filePath,
           pdfPath, // will be undefined if no match
           emisorRfc:
-            xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"][0].attributes.Rfc,
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Emisor"]?.[0].attributes
+              .Rfc,
           notes:
-            xml.contents?.["cfdi:Comprobante"]["cfdi:Addenda"][0][
+            xml.contents?.["cfdi:Comprobante"]["cfdi:Addenda"]?.[0][
               "addendaFacto:addendaFacto"
-            ][0]["addendaFacto:notas"],
+            ]?.[0]["addendaFacto:notas"],
         } as Invoice;
       });
 
