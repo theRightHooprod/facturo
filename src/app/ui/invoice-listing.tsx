@@ -20,6 +20,7 @@ import { Button } from "@/app/ui/button";
 import xml2js from "xml2js";
 import { arrayToCsv, formatDateTimeForExcel } from "@/app/utils";
 import InvoiceContainer from "@/app/ui/invoice/invoice-container";
+import ButtonExportPDF from "@/app/ui/invoice/export_pdf_button";
 
 export function InvoiceListing() {
   const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
@@ -130,9 +131,7 @@ export function InvoiceListing() {
       ]);
 
       if (result.success) {
-        window.alert("Se ha exportado correctamente.");
-      } else {
-        window.alert(`Error: ${result.error}`);
+        await window.electronAPI.showItemInFolder(result.files[0].fullPath);
       }
     } catch (error) {
       console.log(error);
@@ -151,12 +150,15 @@ export function InvoiceListing() {
           </div>
         </Button>
         {fileMetadata && (
-          <Button
-            onClick={() => handleToCsvButton(fileMetadata)}
-            className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
-          >
-            <div className="dark:text-black">Export to CSV</div>
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => handleToCsvButton(fileMetadata)}
+              className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
+            >
+              <div className="dark:text-black">Export to CSV</div>
+            </Button>
+            <ButtonExportPDF invoices={fileMetadata} outputPath="/downloads" />
+          </div>
         )}
       </div>
       <br></br>
