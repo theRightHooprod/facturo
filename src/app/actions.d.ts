@@ -115,7 +115,14 @@ interface Window {
     selectDirectory: () => Promise<CustoFileMetadata>;
     openPath: (string) => Promise<string>;
     showItemInFolder: (string) => Promise<string>;
-    saveFile: (any) => Promise<{ success; files; error }>;
+    saveFile: (
+      any,
+    ) => Promise<{
+      success;
+      files: { fullPath: string; name: string }[];
+      error;
+    }>;
+    readFile: (filePath: string) => Promise<{ success: boolean; content }>;
   };
   void;
 }

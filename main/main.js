@@ -200,6 +200,16 @@ ipcMain.on("show-item-in-folder", (event, filePath) => {
   shell.showItemInFolder(filePath);
 });
 
+ipcMain.handle("read-file", async (event, filePath) => {
+  try {
+    const isPdf = filePath.toLowerCase().endsWith(".pdf");
+    const data = fs.readFileSync(filePath, isPdf ? null : "utf8");
+    return { success: true, content: data, isPdf };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();

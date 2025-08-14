@@ -18,8 +18,9 @@
 import React, { useState } from "react";
 import { Button } from "@/app/ui/button";
 import xml2js from "xml2js";
-import { arrayToCsv, formatDateTimeForExcel } from "@/app/utils";
 import InvoiceContainer from "@/app/ui/invoice/invoice-container";
+import ButtonExportPDF from "@/app/ui/invoice/export_pdf_button";
+import ButtonExportCSV from "./invoice/export_csv_button";
 
 export function InvoiceListing() {
   const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
@@ -95,50 +96,6 @@ export function InvoiceListing() {
     }
   };
 
-  const handleToCsvButton = async (fileMetadata: Invoice[]) => {
-    const csvData: string[][] = fileMetadata.map((invoice) => [
-      invoice.date?.toString() ?? formatDateTimeForExcel(invoice.date!) ?? "",
-      "",
-      `${invoice.serie ?? ""} ${invoice.folio}`,
-      invoice.emisorRfc ?? "",
-      invoice.emisor ?? "",
-      invoice.subtotal ?? "",
-      invoice.iva?.toString() ?? "",
-      invoice.total ?? "",
-    ]);
-
-    const headers: string[] = [
-      "Emisión",
-      "Concepto",
-      "Folio",
-      "RFC",
-      "Emisor",
-      "Subtotal",
-      "Iva",
-      "Total",
-    ];
-
-    csvData.unshift(headers);
-
-    try {
-      const result = await window.electronAPI.saveFile([
-        {
-          name: "exported",
-          ext: ".csv",
-          contents: "\uFEFF" + arrayToCsv(csvData),
-        },
-      ]);
-
-      if (result.success) {
-        window.alert("Se ha exportado correctamente.");
-      } else {
-        window.alert(`Error: ${result.error}`);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="w-full px-5">
       <div className="flex gap-2">
@@ -151,12 +108,10 @@ export function InvoiceListing() {
           </div>
         </Button>
         {fileMetadata && (
-          <Button
-            onClick={() => handleToCsvButton(fileMetadata)}
-            className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
-          >
-            <div className="dark:text-black">Export to CSV</div>
-          </Button>
+          <div className="flex gap-2">
+            <ButtonExportCSV invoices={fileMetadata} />
+            <ButtonExportPDF invoices={fileMetadata} outputPath="/downloads" />
+          </div>
         )}
       </div>
       <br></br>
