@@ -19,7 +19,9 @@ import { arrayToCsv, formatDateTimeForExcel } from "@/app/utils";
 export default function ButtonExportCSV({ invoices }: { invoices: Invoice[] }) {
   const handleToCsvButton = async (fileMetadata: Invoice[]) => {
     const csvData: string[][] = fileMetadata.map((invoice) => [
-      invoice.date?.toString() ?? formatDateTimeForExcel(invoice.date!) ?? "",
+      typeof invoice.date === "string"
+        ? formatDateTimeForExcel(invoice.date)
+        : "",
       "",
       `${invoice.serie ?? ""} ${invoice.folio}`,
       invoice.emisorRfc ?? "",
