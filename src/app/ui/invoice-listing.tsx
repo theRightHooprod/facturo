@@ -97,7 +97,7 @@ export function InvoiceListing() {
   };
 
   return (
-    <div className="w-full px-5">
+    <div className="flex w-full flex-col gap-2.5 px-5">
       <div className="flex gap-2">
         <Button
           onClick={() => handleLoadDir()}
@@ -114,7 +114,13 @@ export function InvoiceListing() {
           </div>
         )}
       </div>
-      <br></br>
+      {fileMetadata && (
+        <div className="flex gap-2.5">
+          <p>
+            <b>Loaded:</b> {fileMetadata.length}
+          </p>
+        </div>
+      )}
       <div className="flex flex-col gap-2.5">
         {fileMetadata?.map((metadata: Invoice, index) => (
           <InvoiceContainer key={index} invoice={metadata} />
