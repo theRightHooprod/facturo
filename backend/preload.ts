@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-const { contextBridge, ipcRenderer, shell } = require("electron");
+import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld("electronAPI", {
+const electronAPI: ElectronAPI = {
   on: (channel, callback) => {
     ipcRenderer.on(channel, callback);
   },
@@ -28,4 +28,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.send("show-item-in-folder", filePath),
   saveFile: (files) => ipcRenderer.invoke("save-files-to-directory", files),
   readFile: (filePath) => ipcRenderer.invoke("read-file", filePath),
-});
+};
+
+contextBridge.exposeInMainWorld("electronAPI", electronAPI);
