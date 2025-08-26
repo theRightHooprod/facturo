@@ -38,7 +38,7 @@ export default function InvoiceContainer({
       open={true}
       className="cursor-pointer rounded-l-xl bg-gray-100 text-black select-none marker:text-transparent first:mt-2.5 last:mb-2.5"
     >
-      <summary className="p-2">
+      <summary className="p-2" onClick={onClick}>
         {invoice.serie}
         {invoice.folio} <b>{invoice.emisor}</b>
       </summary>
@@ -95,7 +95,7 @@ export default function InvoiceContainer({
           )}
           {invoice.pdfPath ? (
             <Button
-              onClick={onClick}
+              onClick={() => handleShowItemInFolderButton(invoice.pdfPath!)}
               className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
             >
               <div className="dark:text-white">Open in file explorer</div>
