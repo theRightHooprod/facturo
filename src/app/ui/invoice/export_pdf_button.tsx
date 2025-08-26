@@ -135,7 +135,7 @@ export default function ButtonExportPDF({
       onClick={() => mergeInvoiceFiles(invoices, outputPath)}
       className="rounded-r-lg bg-white hover:bg-gray-200 md:hover:bg-gray-200"
     >
-      <div className="dark:text-black">Export to Merged PDF</div>
+      <div className="dark:text-black">Merge</div>
     </Button>
   );
 }
