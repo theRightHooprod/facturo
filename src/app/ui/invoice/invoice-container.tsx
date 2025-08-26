@@ -29,13 +29,13 @@ export default function InvoiceContainer({ invoice }: { invoice: Invoice }) {
   return (
     <details
       open={true}
-      className="cursor-pointer rounded-2xl bg-gray-100 text-black select-none marker:text-transparent"
+      className="cursor-pointer rounded-l-xl bg-gray-100 text-black select-none marker:text-transparent first:mt-2.5 last:mb-2.5"
     >
-      <summary className="h-full w-full p-6">
+      <summary className="p-2">
         {invoice.serie}
         {invoice.folio} <b>{invoice.emisor}</b>
       </summary>
-      <div className="px-6 pb-6">
+      <div className="px-2 pb-2">
         <p>
           <b>Fecha de generación: </b>
           {invoice.date ? new Date(invoice.date).toLocaleString("es-MX") : ""}

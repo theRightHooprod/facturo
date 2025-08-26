@@ -6,6 +6,7 @@ import xml2js from "xml2js";
 import InvoiceContainer from "@/app/ui/invoice/invoice-container";
 import ButtonExportPDF from "@/app/ui/invoice/export_pdf_button";
 import ButtonExportCSV from "@/app/ui/invoice/export_csv_button";
+import Preview from "./ui/preview";
 
 export default function Home() {
   const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
@@ -82,41 +83,35 @@ export default function Home() {
   };
 
   return (
-    <div className="mt-15 flex flex-col items-center justify-center md:mt-8">
-      <div className="h-5"></div>
-      <div className="flex w-full flex-col gap-2.5 px-5">
-        <div className="flex gap-2">
-          <Button
-            onClick={() => handleLoadDir()}
-            className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
-          >
-            <div className="dark:text-black">
-              {fileMetadata ? "Switch directory" : "Select directory"}
-            </div>
-          </Button>
-          {fileMetadata && (
-            <div className="flex gap-2">
-              <ButtonExportCSV invoices={fileMetadata} />
-              <ButtonExportPDF
-                invoices={fileMetadata}
-                outputPath="/downloads"
-              />
-            </div>
-          )}
-        </div>
+    <div className="flex h-[calc(100vh-32px)] gap-2">
+      <div className="flex flex-col gap-2.5">
+        <Button
+          onClick={() => handleLoadDir()}
+          className="rounded-br-lg bg-white hover:bg-gray-200 md:hover:bg-gray-200"
+        >
+          <div className="dark:text-black">
+            {fileMetadata ? "Switch directory" : "Select directory"}
+          </div>
+        </Button>
+        {fileMetadata && <ButtonExportCSV invoices={fileMetadata} />}
+        {fileMetadata && (
+          <ButtonExportPDF invoices={fileMetadata} outputPath="/downloads" />
+        )}
         {fileMetadata && (
           <div className="flex gap-2.5">
             <p>
-              <b>Loaded:</b> {fileMetadata.length}
+              <b>Total:</b> <br />
+              {fileMetadata.length}
             </p>
           </div>
         )}
-        <div className="flex flex-col gap-2.5">
-          {fileMetadata?.map((metadata: Invoice, index) => (
-            <InvoiceContainer key={index} invoice={metadata} />
-          ))}
-        </div>
       </div>
+      <div className="flex flex-col flex-nowrap gap-2.5 overflow-x-auto">
+        {fileMetadata?.map((metadata: Invoice, index) => (
+          <InvoiceContainer key={index} invoice={metadata} />
+        ))}
+      </div>
+      {fileMetadata && <Preview />}
     </div>
   );
 }

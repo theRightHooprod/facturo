@@ -18,8 +18,7 @@ export default function Preview() {
     <object
       data="https://www.panini.es/media/paniniFiles/Ndp-el-anime-de-mushoku-tensei-tendra-tercera-temporada.pdf"
       type="application/pdf"
-      width="100%"
-      height="100%"
+      className="h-auto w-full"
     >
       <p>
         Alternative text - include a link{" "}

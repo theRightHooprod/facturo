@@ -64,7 +64,7 @@ export default function ButtonExportCSV({ invoices }: { invoices: Invoice[] }) {
   return (
     <Button
       onClick={() => handleToCsvButton(invoices)}
-      className="bg-white hover:bg-gray-200 md:hover:bg-gray-200"
+      className="rounded-r-lg bg-white hover:bg-gray-200 md:hover:bg-gray-200"
     >
       <div className="dark:text-black">Export to CSV</div>
     </Button>
