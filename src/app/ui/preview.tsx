@@ -13,17 +13,22 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-export default function Preview() {
-  return (
-    <object
-      data="https://www.panini.es/media/paniniFiles/Ndp-el-anime-de-mushoku-tensei-tendra-tercera-temporada.pdf"
-      type="application/pdf"
-      className="h-auto w-full"
-    >
-      <p>
-        Alternative text - include a link{" "}
-        <a href="http://africau.edu/images/default/sample.pdf">to the PDF!</a>
-      </p>
-    </object>
-  );
+import React, { useMemo } from "react";
+
+interface Props {
+  invoice?: { pdfPath?: string };
+}
+
+const FALLBACK_PDF =
+  "https://www.panini.es/media/paniniFiles/Ndp-el-anime-de-mushoku-tensei-tendra-tercera-temporada.pdf";
+
+export default function Preview({ invoice }: Props) {
+  const pdfUrl = useMemo(() => {
+    if (invoice?.pdfPath) {
+      return window.electronAPI.getFileUrl(invoice.pdfPath);
+    }
+    return FALLBACK_PDF;
+  }, [invoice]);
+
+  return <webview src={pdfUrl} className="h-auto w-full" />;
 }

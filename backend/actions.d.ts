@@ -55,14 +55,13 @@ interface ElectronAPI {
   }>;
 
   /** Read a file (binary or text) and get its contents back. */
-  readFile(
-    filePath: string,
-  ): Promise<{
+  readFile(filePath: string): Promise<{
     success: boolean;
     content?: Buffer | string;
     isPdf?: boolean;
     error?: string;
   }>;
+  getFileUrl(absPath: string): string;
 }
 
 interface FileObject {

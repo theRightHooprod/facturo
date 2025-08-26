@@ -14,6 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Button } from "@/app/ui/button";
+import { MouseEventHandler } from "react";
 
 const handleOpenButton = async (fullPath: string): Promise<void> => {
   await window.electronAPI.openPath(fullPath);
@@ -25,7 +26,13 @@ const handleShowItemInFolderButton = async (
   await window.electronAPI.showItemInFolder(fullPath);
 };
 
-export default function InvoiceContainer({ invoice }: { invoice: Invoice }) {
+export default function InvoiceContainer({
+  invoice,
+  onClick,
+}: {
+  invoice: Invoice;
+  onClick: MouseEventHandler<HTMLButtonElement>;
+}) {
   return (
     <details
       open={true}
@@ -88,7 +95,7 @@ export default function InvoiceContainer({ invoice }: { invoice: Invoice }) {
           )}
           {invoice.pdfPath ? (
             <Button
-              onClick={() => handleShowItemInFolderButton(invoice.pdfPath!)}
+              onClick={onClick}
               className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
             >
               <div className="dark:text-white">Open in file explorer</div>

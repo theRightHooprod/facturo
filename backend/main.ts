@@ -36,6 +36,9 @@ const createWindow = async (): Promise<void> => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+      webviewTag: true,
     },
     icon: __dirname + "/icon.ico",
     titleBarStyle: "hidden",

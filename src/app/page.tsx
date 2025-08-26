@@ -10,6 +10,7 @@ import Preview from "./ui/preview";
 
 export default function Home() {
   const [fileMetadata, setFiles] = useState<Invoice[] | null>(null);
+  const [previewMetadata, setPreviewMetadata] = useState<Invoice | null>(null);
 
   const handleLoadDir = async (): Promise<void> => {
     const result: CustoFileMetadata =
@@ -108,10 +109,14 @@ export default function Home() {
       </div>
       <div className="flex flex-col flex-nowrap gap-2.5 overflow-x-auto">
         {fileMetadata?.map((metadata: Invoice, index) => (
-          <InvoiceContainer key={index} invoice={metadata} />
+          <InvoiceContainer
+            onClick={() => setPreviewMetadata(metadata)}
+            key={index}
+            invoice={metadata}
+          />
         ))}
       </div>
-      {fileMetadata && <Preview />}
+      {previewMetadata && <Preview invoice={previewMetadata} />}
     </div>
   );
 }
