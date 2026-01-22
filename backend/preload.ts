@@ -28,6 +28,7 @@ const electronAPI: ElectronAPI = {
     ipcRenderer.send("show-item-in-folder", filePath),
   saveFile: (files) => ipcRenderer.invoke("save-files-to-directory", files),
   readFile: (filePath) => ipcRenderer.invoke("read-file", filePath),
+  getFileUrl: (absPath) => `file://${absPath.replace(/\\/g, "/")}`,
 };
 
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);

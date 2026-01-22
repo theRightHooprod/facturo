@@ -13,22 +13,22 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import clsx from "clsx";
+import React, { useMemo } from "react";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
+interface Props {
+  invoice?: { pdfPath?: string };
 }
 
-export function Button({ children, className, ...rest }: ButtonProps) {
-  return (
-    <button
-      {...rest}
-      className={clsx(
-        "flex h-10 items-center bg-blue-500 px-1 text-sm font-medium text-white transition-colors hover:cursor-pointer hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50",
-        className,
-      )}
-    >
-      {children}
-    </button>
-  );
+const FALLBACK_PDF =
+  "https://www.panini.es/media/paniniFiles/Ndp-el-anime-de-mushoku-tensei-tendra-tercera-temporada.pdf";
+
+export default function Preview({ invoice }: Props) {
+  const pdfUrl = useMemo(() => {
+    if (invoice?.pdfPath) {
+      return window.electronAPI.getFileUrl(invoice.pdfPath);
+    }
+    return FALLBACK_PDF;
+  }, [invoice]);
+
+  return <webview src={pdfUrl} className="h-auto w-full" />;
 }
