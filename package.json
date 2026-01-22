@@ -11,7 +11,7 @@
     "lint": "next lint",
     "clear": "rimraf out && rimraf dist",
     "build:frontend": "next build src",
-    "build:backend": "tsc -p backend",
+    "build:backend": "tsc -p src/backend",
     "build": "build:frontend && yarn build:backend",
     "postinstall": "electron-builder install-app-deps",
     "dist:clear": "clear && build && electron-builder",

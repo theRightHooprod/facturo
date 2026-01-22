@@ -92,16 +92,24 @@ ipcMain.handle("select-directory", async (): Promise<SelectDirectoryResult> => {
 			if (!entry.isFile()) continue;
 
 			const filePath = path.join(entry.parentPath, entry.name);
-			const ext = path.extname(filePath).toLowerCase();
+			const ext: string = path.extname(filePath).toLowerCase();
 
-			if (![".xml", ".pdf"].includes(ext)) continue;
+			const acceptedTypes = new Map<string, FileType>([
+				['.xml', 'XML'],
+				['.pdf', 'PDF'],
+				['.jpeg', 'TICKET'],
+				['.jpg', 'TICKET'],
+			]);
+
+			if (!acceptedTypes.has(ext)) continue;
 
 			const baseObj: FileObject = {
 				filePath,
+				type: acceptedTypes.get(ext)!,
 				name: path.parse(filePath).name,
 			};
 
-			if (ext === ".xml") {
+			if (baseObj.type === 'XML') {
 				try {
 					baseObj.contents = fs.readFileSync(filePath, "utf-8");
 				} catch (readErr) {
