@@ -11,7 +11,7 @@
     "lint": "next lint",
     "clear": "rimraf out && rimraf dist",
     "build:frontend": "next build src",
-    "build:backend": "tsc -p backend",
+    "build:backend": "tsc -p src/backend",
     "build": "build:frontend && yarn build:backend",
     "postinstall": "electron-builder install-app-deps",
     "dist:clear": "clear && build && electron-builder",
@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "electron-serve": "^2.1.1",
-    "next": "^15.4.6",
+    "electron-serve": "^3.0.0",
+    "next": "^16.1.4",
     "pdf-lib": "^1.17.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -30,18 +30,18 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.1.11",
-    "@types/node": "^24.2.1",
+    "@types/node": "^25.0.10",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "@types/xml2js": "^0.4.14",
     "concurrently": "^9.2.0",
-    "electron": "^37.2.6",
-    "electron-builder": "^26.0.12",
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0",
     "eslint": "^9.33.0",
-    "eslint-config-next": "^15.4.6",
+    "eslint-config-next": "^16.1.4",
     "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.14",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.1.11",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   }
 }

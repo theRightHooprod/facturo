@@ -20,7 +20,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "outDir": "../dist/backend",
+    "outDir": "../../dist/backend",
     "removeComments": true
   },
   "exclude": [
@@ -30,5 +30,6 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
+    "../actions.d.ts",
   ]
 }

@@ -17,94 +17,103 @@ import { Button } from "@/app/ui/button";
 import { MouseEventHandler } from "react";
 
 const handleOpenButton = async (fullPath: string): Promise<void> => {
-  await window.electronAPI.openPath(fullPath);
+	await window.electronAPI.openPath(fullPath);
 };
 
 const handleShowItemInFolderButton = async (
-  fullPath: string,
+	fullPath: string,
 ): Promise<void> => {
-  await window.electronAPI.showItemInFolder(fullPath);
+	await window.electronAPI.showItemInFolder(fullPath);
 };
 
 export default function InvoiceContainer({
-  invoice,
-  onClick,
+	invoice,
+	onClick,
 }: {
-  invoice: Invoice;
-  onClick: MouseEventHandler<HTMLButtonElement>;
+	invoice: Invoice;
+	onClick: MouseEventHandler<HTMLButtonElement>;
 }) {
-  return (
-    <details
-      open={true}
-      className="cursor-pointer rounded-l-xl bg-gray-100 text-black select-none marker:text-transparent first:mt-2.5 last:mb-2.5"
-    >
-      <summary className="p-2" onClick={onClick}>
-        {invoice.serie}
-        {invoice.folio} <b>{invoice.emisor}</b>
-      </summary>
-      <div className="px-2 pb-2">
-        <p>
-          <b>Fecha de generación: </b>
-          {invoice.date ? new Date(invoice.date).toLocaleString("es-MX") : ""}
-        </p>
-        <p>
-          <b>RFC: </b>
-          {invoice.emisorRfc}
-        </p>
-        <p>
-          <b>Subtotal: </b>
-          {invoice.subtotal}
-        </p>
-        <p>
-          <b>Impuestos: </b>
-          {invoice.iva}
-        </p>
-        <p>
-          <b>Total: </b>
-          {invoice.total}
-        </p>
-        {invoice.notes ? (
-          <p>
-            <b>Notas: </b>
-            {invoice.notes}
-          </p>
-        ) : (
-          <div></div>
-        )}
-        <div className="my-2 border border-t-gray-400"></div>
-        <div className="flex flex-row gap-1">
-          {invoice.fullpath ? (
-            <Button
-              onClick={() => handleOpenButton(invoice.fullpath!)}
-              className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
-            >
-              <div className="dark:text-white">Show .xml</div>
-            </Button>
-          ) : (
-            <div></div>
-          )}
-          {invoice.pdfPath ? (
-            <Button
-              onClick={() => handleOpenButton(invoice.pdfPath!)}
-              className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
-            >
-              <div className="dark:text-white">Show .pdf</div>
-            </Button>
-          ) : (
-            <div></div>
-          )}
-          {invoice.pdfPath ? (
-            <Button
-              onClick={() => handleShowItemInFolderButton(invoice.pdfPath!)}
-              className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
-            >
-              <div className="dark:text-white">Open in file explorer</div>
-            </Button>
-          ) : (
-            <div></div>
-          )}
-        </div>
-      </div>
-    </details>
-  );
+	return (
+		<details
+			open={true}
+			className="cursor-pointer rounded-l-xl bg-gray-100 text-black select-none marker:text-transparent first:mt-2.5 last:mb-2.5"
+		>
+			<summary className="p-2" onClick={onClick}>
+				{invoice.serie}
+				{invoice.folio} <b>{invoice.emisor}</b>
+			</summary>
+			<div className="px-2 pb-2">
+				<p>
+					<b>Fecha de generación: </b>
+					{invoice.date ? new Date(invoice.date).toLocaleString("es-MX") : ""}
+				</p>
+				<p>
+					<b>RFC: </b>
+					{invoice.emisorRfc}
+				</p>
+				<p>
+					<b>Subtotal: </b>
+					{invoice.subtotal}
+				</p>
+				<p>
+					<b>Impuestos: </b>
+					{invoice.iva}
+				</p>
+				<p>
+					<b>Total: </b>
+					{invoice.total}
+				</p>
+				{invoice.notes ? (
+					<p>
+						<b>Notas: </b>
+						{invoice.notes}
+					</p>
+				) : (
+					<div></div>
+				)}
+				<div className="my-2 border border-t-gray-400"></div>
+				<div className="flex flex-row gap-1">
+					{invoice.fullpath ? (
+						<Button
+							onClick={() => handleOpenButton(invoice.fullpath!)}
+							className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
+						>
+							<div className="dark:text-white">Show .xml</div>
+						</Button>
+					) : (
+						<div></div>
+					)}
+					{invoice.imagePath ? (
+						<Button
+							onClick={() => handleOpenButton(invoice.imagePath!)}
+							className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
+						>
+							<div className="dark:text-white">Show image</div>
+						</Button>
+					) : (
+						<div></div>
+					)}{invoice.pdfPath ? (
+						<Button
+							onClick={() => handleOpenButton(invoice.pdfPath!)}
+							className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
+						>
+							<div className="dark:text-white">Show .pdf</div>
+						</Button>
+					) : (
+						<div></div>
+					)}
+					{invoice.pdfPath ? (
+						<Button
+							onClick={() => handleShowItemInFolderButton(invoice.pdfPath!)}
+							className="bg-orange-600 hover:bg-orange-700 disabled:hover:bg-gray-50"
+						>
+							<div className="dark:text-white">Open in file explorer</div>
+						</Button>
+					) : (
+						<div></div>
+					)}
+				</div>
+			</div>
+		</details>
+	);
 }
