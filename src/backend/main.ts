@@ -109,9 +109,13 @@ ipcMain.handle("select-directory", async (): Promise<SelectDirectoryResult> => {
 				name: path.parse(filePath).name,
 			};
 
-			if (baseObj.type === 'XML') {
+			if (baseObj.type === 'XML' || baseObj.type === 'TICKET') {
 				try {
-					baseObj.contents = fs.readFileSync(filePath, "utf-8");
+					if (baseObj.type === 'XML') {
+						baseObj.contents = fs.readFileSync(filePath, "utf-8");
+					} else if (baseObj.type === 'TICKET') {
+						baseObj.contents = fs.readFileSync(filePath);
+					}
 				} catch (readErr) {
 					const err = toError(readErr);
 					console.error(

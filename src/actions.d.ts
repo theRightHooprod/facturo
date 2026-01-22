@@ -73,7 +73,7 @@ declare global {
 		name: string;
 		type: FileType
 		/** Only filled for XML files */
-		contents?: Contents | string;
+		contents?: Contents | NonSharedBuffer | string;
 	}
 
 	type SelectDirectoryResult = {
@@ -162,6 +162,7 @@ declare global {
 		fullpath: string | undefined;
 		pdfPath: string | undefined; // will be undefined if no match
 		imagePath: string | undefined;
+		imageData: string | undefined;
 		notes: string | undefined;
 	}
 

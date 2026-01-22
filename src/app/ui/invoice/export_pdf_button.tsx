@@ -31,6 +31,12 @@ export default function ButtonExportPDF({
 		const mergedPdf = await PDFDocument.create();
 
 		for (const invoice of invoices) {
+			const pageWidth = 612; // US Letter width
+			const pageHeight = 792;
+			const margin = 40;
+			const fontSize = 12;
+
+			const font = await mergedPdf.embedFont(StandardFonts.Courier);
 			// 1. If a PDF exists, merge it
 			if (invoice.pdfPath) {
 				const pdfBytes = await window.electronAPI.readFile(invoice.pdfPath);
@@ -44,12 +50,6 @@ export default function ButtonExportPDF({
 
 			// 2. If an XML exists, embed it as a page with text
 			if (invoice.fullpath) {
-				const pageWidth = 612; // US Letter width
-				const pageHeight = 792;
-				const margin = 40;
-				const fontSize = 12;
-
-				const font = await mergedPdf.embedFont(StandardFonts.Courier);
 				const result = await window.electronAPI.readFile(invoice.fullpath);
 				const xmlContent = result.content;
 
@@ -112,6 +112,21 @@ export default function ButtonExportPDF({
 						y -= fontSize + 2; // line spacing
 					}
 				}
+
+			}
+
+			if (invoice.imagePath && invoice.imageData !== undefined) {
+				const jpgImage = await mergedPdf.embedJpg(invoice.imageData);
+
+				const jpgDims = jpgImage.scale(0.25);
+
+				let imagePage = mergedPdf.addPage([pageWidth, pageHeight]);
+				imagePage.drawImage(jpgImage, {
+					x: imagePage.getWidth() / 2 - jpgDims.width / 2,
+					y: imagePage.getHeight() / 2 - jpgDims.height / 2,
+					width: jpgDims.width,
+					height: jpgDims.height,
+				})
 			}
 		}
 

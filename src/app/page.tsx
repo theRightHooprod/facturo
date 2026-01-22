@@ -49,10 +49,13 @@ export default function Home() {
 			const pdfFiles = new Map(files.filter((file) => file.type === 'PDF').map((file) => [file.name.trim(), file.filePath]));
 			const ticketFiles = new Map(files.filter((file) => file.type === 'TICKET').map((file) => [file.name.replace('TICKET', '').trim(), file.filePath]));
 
+			const ticketsData = new Map(files.filter((file) => file.type === 'TICKET').map((file) => [file.name.replace('TICKET', '').trim(), file.contents]));
+
 			const invoices: Invoice[] = xmlFiles!.map((xml: FileObject) => {
 				const baseName = xml!.name.trim();
-				const pdfPath = pdfFiles.get(baseName)
-				const imagePath = ticketFiles.get(baseName)
+				const pdfPath = pdfFiles.get(baseName);
+				const imagePath = ticketFiles.get(baseName);
+				const imageData = ticketsData.get(baseName);
 
 				return {
 					serie: (xml.contents! as Contents)["cfdi:Comprobante"].attributes.Serie,
@@ -71,6 +74,7 @@ export default function Home() {
 					fullpath: xml.filePath,
 					pdfPath, // will be undefined if no match
 					imagePath,
+					imageData,
 					emisorRfc:
 						(xml.contents! as Contents)["cfdi:Comprobante"]["cfdi:Emisor"]?.[0].attributes
 							.Rfc,
